@@ -1,0 +1,109 @@
+Installation (MacOS):
+ - Install tesseract -> "sudo port install tesseract"
+ - Install English tesseract language -> "sudo port install tesseract-eng"
+ - Install spaCy dependencies:
+ 	- "pip install spacy"
+ 	- "python -m spacy download en_core_web_sm"
+ - Set up virtual environment:
+ 	- Download get-pip.py from: https://pip.pypa.io/en/stable/installing/
+ 	- In the directory with that file, run "python get-pip.py"
+ 	- In the project directory, run "pip install pipenv"
+ 	- To enter virtual environment, run "pipenv shell"
+ 		- From here, should be able to run scripts
+
+ Usage:
+ - Adding books:
+ 	- To add a book, create an image for each page of the book and add these images to the "./documents/" directory in a folder labeled with the name of the book
+ 	- Add the metadata for the book to the "document_info.txt"; this includes the number of "content" pages (i.e. pages with relevant text), the publication year, and a mapping describing the letters on each page (Use the existing entries as a model)
+ 	- Rename each of the pages for the book to "content_<an incrementing count>"; you should be left with, at least, a set of pages of the format "content_1," "content_2," etc., with the number incrementing based on the order of the pages
+ 	- Create a folder with the name of the text under the "./figures/" and "./texts/" directories
+ - Notes on documentation:
+ 	- Items below in <angle brackets> mean that they (as well as the angle brackets) should be replaced with the relevant text
+ 	- Items below in [regular brackets] need no text; the flag (i.e. "-p") should be included if the user desires the value to be true (i.e. the plot should be shown, in the case prior)
+
+ - textualize.py:
+ 	- Use: Use models to extract an approximation of the text from some or all of the saved books
+ 	- Process:
+ 		- Enter virtual environment
+ 		- Run "python textualize.py -d <the name of the folder of the children's book to textualize; "full" if all books to be textualized>"
+	- Output: Textualized document created in "./texts/" directory, and text printed to console
+	- Note: Textualizing a text is necessary for most of the other scripts to be applied to it; it is recommended that this be done for all of the texts of interest before further processing
+
+ - parts_of_speech.py:
+ 	- Use: Tag a candidate text or texts with an estimation of their parts of speech, and visualize that data
+ 	- Note: For a document to be posized, it must first have been textualized!
+ 	- Process:
+ 		- Enter virtual environment
+ 		- Run "python parts_of_speech.py -p [if you would like the diagrams to be displayed] -d <the name of the folder of the children's book to posize; "full" if all books to be newly posized>"
+ 			- -d <"full"> will aggregate the parts of speech over all available texts
+ 			- -d <"each"> will aggregate the parts of speech over each available text (and create a visualization for each)
+ 			- Visualization: A pie chart showing the distribution of parts of speech within the text
+ 	- Output: Various statistics (i.e. POS counts, proportions) printed to console, figures saved to "./figures/" directory ("./figures/<document>/posize_<document>.png")
+
+ - sentence_structure.py:
+ 	- Use: Visualize the sentence structure of each page in a candidate text
+ 	- Process:
+ 		- Enter virtual environment
+ 		- Run "python sentence_structure.py -d <the name of the document for which to display dependencies>"
+ 	- Output:
+ 		- A dependency graph accessible at 'localhost:5000' (Use your browser to go to that address!)
+ 			- Press "Ctrl-C" to exit out of this process in the terminal window when finished
+ 			- Note: No visualizations are saved in this module due to technical limitations, but the user can screenshot the sentence structure in the browser if they would like!
+
+ - text_statistics.py
+ 	- Use: Calculate and display various metrics for one or all of the texts
+ 	- Process:
+ 		- Enter virtual environment
+ 		- Run "python text_statistics.py -s [if you'd like to consider semi-colons a sentence-terminating punctuation mark] -d <the name of the folder of the book to calculate metrics for; "each" if all books to be subject to calculations>"
+ 			-d <"each"> will calculate and display metrics for each available text
+ 	- Output:
+ 		- A table displaying the relevant metrics automatically launched in the user's default internet browser
+ 			- Note: No visualizations are saved in this module due to technical limitations, but the user can screenshot the metrics in the browser if they would like!
+ 	- Metrics Displayed:
+ 		- 'sentences' - number of sentences in the text (approx. [complicated by lack of punctuation in certain cases])
+ 		- 'words' - number of words in the text (approx.)
+ 		- 'syllables' - number of syllables in the text (approx.)
+ 		- 'letters' - number of letters in the text (approx.)
+ 		- 'unique_words' - number of unique words in the text
+ 		- 'ttr' - type-token ratio (i.e. 'unique_words'/'words')
+ 		- 'flesh-adap' - flesch reading ease index (readability index)
+ 		- 'coleman' - Coleman-Liau index (readability index)
+ 		- 'flesch-grade' - Flesch-Kincaid grade level (readability index)
+ 			- Loosely corresponds to a specific grade level!
+ 		- 'ari' - Automated Readability Index (readability index)
+ 		- 'alw' - average letters per word
+ - pos_word_cloud.py
+ 	- Use: Create a word cloud for one or more available texts
+ 	- Process:
+ 		- Enter virtual environment
+ 		- Run "pos_word_cloud.py -d <the name of the book to cloud> -p [if you would like the diagrams to be displayed] -t <part of speech to be clouded: NOUN, ADJ, or VERB>"
+ 			-d <"each"> will create a word cloud for each available text
+ 			-d <"full"> will aggregate the texts into one before creating a single, general word cloud
+ 			-t <"NOUN"> will create a word cloud for nouns
+ 			-t <"VERB"> will create a word cloud for verbs
+ 			-t <"ADJ"> will create a word cloud for adjectives
+ 	- Output:
+ 		- A word cloud (or multiple), as well as that same word cloud (or clouds) saved to "./figures/" directory ("./figures/<document>/pos_word_cloud_<POS>.png")
+ - colors_across_text.py
+ 	- Use: Create a pie chart displaying the most common colors on each page of a text
+ 	- Process:
+ 		- Enter virtual environment
+ 		- Run "colors_across_text.py -d <the name of the book to get colors from> -p [if you would like the diagrams to be displayed] -c <number of colors to track per page>"
+	- Output:
+		- A pie chart for each page of the text, saved to the "./figures" directory ("./figures/<document>/colors_across_text_<page>.png")
+ - difficulties_across_text.py
+ 	- Use: Graph the various metrics from "text_statistics.py" for each page of a text
+ 	- Process:
+ 		- Enter virtual environment
+ 		- Run "difficulties_across_text.py -d <the name of the book to process> -p [if you would like the diagrams to be displayed] -s [if you'd like to consider semi-colons a sentence-terminating punctuation mark]"
+	- Output:
+		- A plot for each individual metric calculated in "text_statistics.py," saved in the "./figures/" directory ("./figures/<document>/difficulties_across_text_<metric>.png")
+ - difficulties_across_time.py
+ 	- Use: Graph the various metrics from "text_statistics.py" for each text, ordered by publication date and averaged within years
+ 	- Process:
+ 		- Enter virtual environment
+ 		- Run "difficulties_across_time.py -t <metric (from text_statistics.py)> -p [if you would like the diagrams to be displayed] -s [if you'd like to consider semi-colons a sentence-terminating punctuation mark]"
+	- Output:
+		- A plot for each individual metric calculated in "text_statistics.py," saved in the "./figures/" directory ("./figures/full/difficulties_across_time_<metric>.png")
+
+
